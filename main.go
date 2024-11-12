@@ -71,9 +71,11 @@ func saveToken(path string, token *oauth2.Token) {
 func sendEmail(srv *gmail.Service, to string, subject string, body string) error {
 	var message gmail.Message
 
-	emailTo := mail.Address{Name: "", Address: to}
+	// Create the recipient and sender email addresses
+	emailTo := mail.Address{Name: "", Address: to} // You can leave Name as "" if you don't need to include the name
 	emailFrom := mail.Address{Name: "Kalbo Kobu", Address: "comjoed00509@gmail.com"}
 
+	// Create the email headers
 	header := make(map[string]string)
 	header["From"] = emailFrom.String()
 	header["To"] = emailTo.String()
@@ -82,12 +84,14 @@ func sendEmail(srv *gmail.Service, to string, subject string, body string) error
 	header["Content-Type"] = "text/plain; charset=\"utf-8\""
 	header["Content-Transfer-Encoding"] = "base64"
 
+	// Build the email body
 	var msg strings.Builder
 	for k, v := range header {
 		msg.WriteString(fmt.Sprintf("%s: %s\r\n", k, v))
 	}
 	msg.WriteString("\r\n" + body)
 
+	// Encode and send the email
 	raw := base64.URLEncoding.EncodeToString([]byte(msg.String()))
 	message.Raw = raw
 
